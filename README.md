@@ -16,6 +16,10 @@ yarn
 
 ```bash
 
-yarn start
+yarn dev
 
 ```
+
+## Requirements
+
+0. [node > 14](https://nodejs.org/en/)
