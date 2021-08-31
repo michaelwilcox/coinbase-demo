@@ -16,7 +16,17 @@ class WS implements WebSocketClient {
         });
 
         this.socket.addEventListener('message', (event) => {
-            console.log('message', event);
+            if (event.data instanceof Blob) {
+                const reader = new FileReader();
+        
+                reader.onload = () => {
+                    console.log(reader.result);
+                };
+        
+                reader.readAsText(event.data);
+            } else {
+                console.log(event.data);
+            }
         });
     }
     send(message: string) {
