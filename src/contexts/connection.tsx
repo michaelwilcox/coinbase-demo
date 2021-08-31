@@ -1,12 +1,11 @@
 import React, { createContext, useContext } from 'react';
-import { io, Socket } from "socket.io-client";
-import { ENDPOINTS } from '../constants';
+import ws, { WebSocketClient } from '../utils/websocket';
 
 interface ConnectionConfig {
-    socket?: Socket
+    socket: WebSocketClient
 }
 const value = {
-    // socket: io(ENDPOINTS.COINBASE_WS)
+    socket: ws
 }
 const ConnectionContext = createContext<ConnectionConfig>(value);
 
@@ -19,5 +18,5 @@ export function ConnectionProvider({ children = undefined as any }) {
 }
 
 export function useConnection() {
-    return useContext(ConnectionContext).socket as Socket;
+    return useContext(ConnectionContext).socket as WebSocketClient;
 }

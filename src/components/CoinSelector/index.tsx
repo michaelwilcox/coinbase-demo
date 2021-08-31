@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ENDPOINTS } from '../../constants';
-// import { useConnection } from '../../contexts/connection';
+import { useConnection } from '../../contexts/connection';
 
 import {  Input, AutoComplete  } from 'antd';
-import {  UserOutlined  } from '@ant-design/icons';
 
 interface Option {
     name: string,
@@ -20,7 +19,7 @@ export const CoinSelector = () => {
     const [value, setValue] = useState('');
     const [initialOptions, setInitialOptions] = useState<Array<Options>>([]);
     const [options, setOptions] = useState<Array<Options>>([]);
-    // const connection = useConnection();
+    const connection = useConnection();
 
     const renderTitle = (title: string) => (
         <span>
@@ -50,7 +49,7 @@ export const CoinSelector = () => {
             >
             {ticker}
             <span>
-                <UserOutlined /> {name}
+                {name}
             </span>
             </div>
         ),
@@ -84,8 +83,7 @@ export const CoinSelector = () => {
     }
 
     const onSelect = (selection: string) => {
-        // TODO: apply to global context
-        console.log(selection);
+        connection.send(selection);
         setValue('');
         setOptions(initialOptions);
     }
