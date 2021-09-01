@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ENDPOINTS } from '../../constants';
-import { useConnection } from '../../contexts/connection';
+import { useTicker } from '../../contexts/ticker';
 
 import {  Input, AutoComplete  } from 'antd';
 
@@ -19,7 +19,7 @@ export const CoinSelector = () => {
     const [value, setValue] = useState('');
     const [initialOptions, setInitialOptions] = useState<Array<Options>>([]);
     const [options, setOptions] = useState<Array<Options>>([]);
-    const connection = useConnection();
+    const { setTicker } = useTicker();
 
     const renderTitle = (title: string) => (
         <span>
@@ -83,21 +83,20 @@ export const CoinSelector = () => {
     }
 
     const onSelect = (selection: string) => {
-        connection.send(selection);
+        setTicker(selection);
         setValue('');
         setOptions(initialOptions);
     }
       
     useEffect(() => {
         async function getCoins() {
-            const currencies = await fetch(ENDPOINTS.CURRENCIES).then(res => res.json());
-            return currencies
-                    .filter((c: any) => c.details.type === 'crypto')
-                    .sort((a: any, b: any) => a.id.localeCompare(b.id))
+            const products = await fetch(ENDPOINTS.PRODUCTS).then(res => res.json());
+            return products
+                    .sort((a: any, b: any) => a.id.localeCompare(b.id));
         }
         getCoins().then((coins) => {
             const options = coins.map((coin: any) => {
-                return renderItem(coin.id, coin.name)
+                return renderItem(coin.id, coin.display_name)
             });
 
             const option = { label: renderTitle('Crypto'), options }

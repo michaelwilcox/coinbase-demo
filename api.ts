@@ -11,7 +11,8 @@ wss1.on('connection', ws => {
   site = ws;
   ws.on('message', message => {
     console.log(`${new Date().toISOString()} received ${message}`);
-    wss2.send(JSON.stringify({ type: 'subscribe', product_ids: [`${message}-USD`], channels: ['level2', 'heartbeat'] }));
+    // wss2.send(JSON.stringify({ type: 'subscribe', product_ids: [`${message}-USD`], channels: ['level2', 'heartbeat'] }));
+    wss2.send(message);
   });
 });
 
