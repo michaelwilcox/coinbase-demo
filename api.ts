@@ -6,6 +6,14 @@ const wss1 = new ws.Server({ port: PORT });
 const wss2 = new ws.WebSocket(COINBASE_API);
 let site = null;
 
+/*
+TODO: Breakdown of type of messages
+i.e. add a messaging structure between client and server
+
+https://docs.pro.coinbase.com/#websocket-feed
+
+*/
+
 wss1.on('connection', ws => {
   console.log(`${new Date().toISOString()} socket connection on ${PORT}`);
   site = ws;
