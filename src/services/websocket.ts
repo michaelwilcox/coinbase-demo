@@ -1,19 +1,26 @@
 import { ENDPOINTS } from '../constants';
 import EventEmitter from 'eventemitter3';
 
+interface ListenerMap {
+    [name: string]: Array<Function>
+}
+
 export interface WebSocketClient {
     emitter: EventEmitter
     socket: WebSocket
-    send: Function
-    listen: Function
+    subscriptions: ListenerMap
+    send(message: string): void
+    subscribe(event: string, cb: Function): Function
 }
 
 class WS implements WebSocketClient {
     emitter: EventEmitter;
     socket: WebSocket;
+    subscriptions: ListenerMap;
     constructor() {
         this.emitter = new EventEmitter();
         this.socket = new WebSocket(ENDPOINTS.WEBSOCKET_SERVER);
+        this.subscriptions = {};
         console.log(`socket instantiated on ${ENDPOINTS.WEBSOCKET_SERVER}`);
 
         this.socket.addEventListener('open', (event) => {
@@ -37,8 +44,19 @@ class WS implements WebSocketClient {
     send(message: string) {
         this.socket.send(message)
     }
-    listen(cb: any) {
-        this.emitter.on('message', cb);
+    subscribe(event: string, cb: Function) {
+        if (!Array.isArray(this.subscriptions[event])) {
+            this.subscriptions[event] = [];
+        }
+
+        this.subscriptions[event].push(cb);
+        const index = this.subscriptions[event].length - 1;
+
+        const unsubscribe = () => {
+            this.subscriptions[event].splice(index, 1);
+        }
+
+        return unsubscribe.bind(this);
     }
 }
 
